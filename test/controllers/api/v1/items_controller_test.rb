@@ -132,4 +132,12 @@ class Api::V1::ItemsControllerTest < ActionController::TestCase
     assert json_response["name"]
     assert json_response["description"]
   end
+
+  test "#invoice_items responds to json" do
+    
+    get '/api/v1/items/1/invoice_items', format: :json
+
+    assert_response :success
+  end
+
 end

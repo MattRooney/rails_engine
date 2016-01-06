@@ -24,7 +24,7 @@ namespace :data do
 
     CSV.foreach(items_path, :headers => true) do |row|
       item =  Item.create!(row.to_hash)
-      puts "Imported Item #{item.name}" if item.persisted?
+      puts "Imported #{item.name}" if item.persisted?
     end
 
     invoices_path = "#{Rails.root}/lib/assets/invoices.csv"
