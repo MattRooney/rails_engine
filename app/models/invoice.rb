@@ -9,4 +9,5 @@ class Invoice < ActiveRecord::Base
     self.all.order("RANDOM()").first
   end
 
+  default_scope -> { order('id DESC') }
 end

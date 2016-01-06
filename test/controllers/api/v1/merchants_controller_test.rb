@@ -4,7 +4,10 @@ class Api::V1::MerchantsControllerTest < ActionController::TestCase
   def create_merchants
     x = 1
     5.times do
-      Merchant.create!(name: " merchant name #{x}")
+      merchant = Merchant.create!(name: " merchant name #{x}")
+      merchant.items.create!(name: "#{x}",
+                             description: "description #{x}",
+                             unit_price: 9999)
       x += 1
     end
   end
@@ -134,4 +137,27 @@ class Api::V1::MerchantsControllerTest < ActionController::TestCase
 
     assert_response :success
   end
+
+  test "#items returns an array of items" do
+    create_merchants
+    get :items, format: :json, id: Merchant.first.id
+
+      assert_kind_of Array, json_response
+  end
+
+  test "#items returns correct number of items" do
+    create_merchants
+    get :items, format: :json, id: Merchant.first.id
+
+    assert_equal Merchant.first.items.count, json_response.count
+  end
+
+  test "#items returns items with the correct properties" do
+    create_merchants
+    get :items, format: :json, id: Merchant.first.id
+
+    assert_equal Merchant.first.items.first.name,
+                 json_response.first["name"]
+  end
+
 end
