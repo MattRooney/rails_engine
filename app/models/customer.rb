@@ -1,7 +1,8 @@
 class Customer < ActiveRecord::Base
   has_many :invoices
+  has_many :transactions, through: :invoices
 
-  private
+  default_scope -> { order('id DESC') }
 
   def self.random
     self.all.order("RANDOM()").first
