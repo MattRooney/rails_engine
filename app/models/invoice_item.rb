@@ -4,7 +4,7 @@ class InvoiceItem < ActiveRecord::Base
 
   before_save :format_dollar
 
-  private
+  default_scope -> { order('id DESC') }
 
   def format_dollar
     self.unit_price = unit_price/100.00

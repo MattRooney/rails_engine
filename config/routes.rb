@@ -87,10 +87,6 @@ Rails.application.routes.draw do
         end
       end
 
-      # namespace :invoices do
-      #   get 'transactions', to: 'invoices#index'
-      # end
-
     end
   end
 
