@@ -19,7 +19,7 @@ class Api::V1::CustomersControllerTest < ActionController::TestCase
     customer_2 = create(:customer)
     get :index, format: :json
 
-    assert_equal 2, json_response.count
+    assert_equal Customer.all.count, json_response.count
   end
 
   test "#index contains customers that have the correct properties" do
@@ -127,4 +127,44 @@ class Api::V1::CustomersControllerTest < ActionController::TestCase
 
     assert_response :success
   end
+
+  test "#invoices returns an array" do
+    customer = create(:customer_with_invoices)
+    get :invoices, format: :json, id: customer.id
+
+    assert_kind_of Array, json_response
+  end
+
+  test "#invoices returns invoices with correct properties" do
+    customer = create(:customer)
+    customer.invoices << create(:invoice)
+    get :invoices, format: :json, id: customer.id
+
+    assert_equal customer.id, json_response.first["customer_id"]
+  end
+
+  test "#transactions responds to json" do
+    customer = create(:customer_with_transactions)
+    get :transactions, format: :json, id: customer.id
+
+    assert_response :success
+  end
+
+  test "#transactions returns an array" do
+    customer = create(:customer_with_transactions)
+    get :transactions, format: :json, id: customer.id
+
+    assert_kind_of Array, json_response
+  end
+
+  test "#transactions returns transactions with correct properties" do
+    customer = create(:customer)
+    invoice = create(:invoice, customer: customer)
+    transaction = create(:transaction, invoice: invoice)
+    get :transactions, format: :json, id: customer.id
+
+    assert_equal customer.transactions.count, json_response.count
+    assert_equal customer.id, Invoice.find(json_response.last["invoice_id"]).customer_id
+  end
+
 end
