@@ -34,7 +34,7 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def favorite_customer
-    respond_with Merchant.favorite_customer(params[:id])
+    respond_with Merchant.find(params[:id]).favorite_customer
   end
 
   def customers_with_pending_invoices
