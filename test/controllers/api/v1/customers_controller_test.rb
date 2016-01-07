@@ -167,4 +167,39 @@ class Api::V1::CustomersControllerTest < ActionController::TestCase
     assert_equal customer.id, Invoice.find(json_response.last["invoice_id"]).customer_id
   end
 
+############ BIZ LOGIC ##########################
+
+  test "#favorite_merchant responds to json" do
+    customer = create(:customer)
+    merchant = create(:merchant)
+    invoice = create(:invoice, customer: customer, merchant: merchant)
+    transaction = create(:transaction, invoice: invoice)
+    get :favorite_merchant, format: :json, id: customer.id
+
+    assert_response :success
+  end
+
+  test "#favorite_merchant returns the correct merchant" do
+    customer = create(:customer)
+
+    merchant      = create(:merchant)
+    invoice       = create(:invoice, customer: customer, merchant: merchant)
+    invoice_2     = create(:invoice, customer: customer, merchant: merchant)
+    invoice_3     = create(:invoice, customer: customer, merchant: merchant)
+    invoice_4     = create(:invoice, customer: customer, merchant: merchant)
+    transaction   = create(:transaction, invoice: invoice)
+    transaction_2 = create(:transaction, invoice: invoice_2)
+    transaction_3 = create(:transaction, invoice: invoice_3)
+    transaction_4 = create(:transaction, invoice: invoice_4)
+
+    merchant_2    = create(:merchant, name: "Matt")
+    invoice_5     = create(:invoice, customer: customer, merchant: merchant_2)
+    invoice_6     = create(:invoice, customer: customer, merchant: merchant_2)
+    transaction_5 = create(:transaction, invoice: invoice_5)
+    transaction_6 = create(:transaction, invoice: invoice_6)
+
+    get :favorite_merchant, format: :json, id: customer.id
+
+    assert_equal merchant, Merchant.find(json_response["id"])
+  end
 end

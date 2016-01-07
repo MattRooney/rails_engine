@@ -2,18 +2,6 @@ require 'test_helper'
 
 class Api::V1::InvoiceItemsControllerTest < ActionController::TestCase
 
-  def create_invoices
-    x = 1
-    5.times do
-      Invoice.create!(status: "status #{x}")
-      x += 1
-    end
-  end
-
-  def invoice_count
-    Invoice.count
-  end
-
   test "#index responds to json" do
     get :index, format: :json
 
@@ -26,45 +14,52 @@ class Api::V1::InvoiceItemsControllerTest < ActionController::TestCase
     assert_kind_of Array, json_response
   end
 
-  test "#index returns the correct number of invoices" do
-    skip
-    create_invoices
+  test "#index returns the correct number of invoices_item" do
+    invoice_item = create(:invoice_item)
     get :index, format: :json
 
-    assert_equal invoice_count, json_response.count
+    assert_equal InvoiceItem.count, json_response.count
   end
 
   test "#index contains invoices that have the correct properties" do
-    create_invoices
+    invoice_item = create(:invoice_item)
+    invoice_item_2 = create(:invoice_item)
+
     get :index, format: :json
 
-    json_response.each do |invoice|
-      assert invoice["customer_id"]
-      assert invoice["status"]
+    json_response.each do |invoice_item|
+      assert invoice_item["invoice_id"]
+      assert invoice_item["unit_price"]
     end
   end
 
   test "#show responds to json" do
-    create_invoices
+    invoice_item = create(:invoice_item)
     get :show, format: :json, id: Invoice.first.id
 
     assert_response :success
   end
 
   test "#show returns a hash" do
-    skip
-    create_invoices
-    get :show, format: :json, id: Invoice.first.id
+    invoice_item = create(:invoice_item)
+    get :show, format: :json, id: invoice_item.id
 
     assert_kind_of Hash, json_response
   end
 
   test "#show contains an invoice with the correct properties" do
-    skip
-    create_invoices
-    get :show, format: :json, id: invoice.first.id
+    invoice_item = create(:invoice_item)
+    get :show, format: :json, id: invoice_item.id
 
-    assert invoice.first.id, json_response["id"]
+    assert invoice_item.id, json_response["id"]
+  end
+
+  test "#find responds to json and returns correct invoice item" do
+    invoice_item = create(:invoice_item, quantity: 3434)
+    get :find, format: :json, id: invoice_item.id
+
+    assert_response :success
+    assert_equal 3434, json_response["quantity"]
   end
 
 end

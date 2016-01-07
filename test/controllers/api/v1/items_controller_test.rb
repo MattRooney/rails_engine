@@ -144,5 +144,13 @@ class Api::V1::ItemsControllerTest < ActionController::TestCase
     assert_equal item.id, json_response.first["item_id"]
   end
 
+  test "#merchant responds to json and returns correct merchant" do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    invoice_item = create(:invoice_item, item: item)
+    get :merchant, format: :json, id: item.id
 
-end
+    assert_response :success
+    assert_equal merchant.id, json_response["id"]
+  end
+ end

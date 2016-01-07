@@ -28,7 +28,7 @@ FactoryGirl.define do
   end
 
   factory :invoice_item do
-    quantity 11
+    quantity 2
     unit_price 999
     invoice
     item
@@ -43,7 +43,8 @@ FactoryGirl.define do
 
   factory :transaction do
     credit_card_number "1234567891234567"
-    result "result"
+    result "success"
     invoice
   end
+
 end
