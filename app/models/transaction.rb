@@ -7,4 +7,8 @@ class Transaction < ActiveRecord::Base
     self.all.order("RANDOM()").first
   end
 
+  def self.successfull
+    joins(:transactions).where("result = 'success'")
+  end
+
 end
